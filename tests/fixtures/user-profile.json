@@ -1,0 +1,78 @@
+{
+  "rateLimit": {
+    "limit": 5000,
+    "cost": 1,
+    "remaining": 4995,
+    "resetAt": "2026-11-16T21:00:00Z"
+  },
+  "user": {
+    "login": "octocat",
+    "name": "The Octocat",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "contributionsCollection": {
+      "totalCommitContributions": 142,
+      "totalPullRequestContributions": 28,
+      "totalIssueContributions": 12,
+      "totalRepositoryContributions": 6,
+      "restrictedContributionsCount": 35,
+      "contributionCalendar": {
+        "totalContributions": 217,
+        "weeks": [
+          {
+            "contributionDays": [
+              { "date": "2026-11-10", "contributionCount": 0, "color": "#ebedf0" },
+              { "date": "2026-11-11", "contributionCount": 4, "color": "#216e39" },
+              { "date": "2026-11-12", "contributionCount": 7, "color": "#216e39" },
+              { "date": "2026-11-13", "contributionCount": 3, "color": "#30a14e" },
+              { "date": "2026-11-14", "contributionCount": 5, "color": "#216e39" },
+              { "date": "2026-11-15", "contributionCount": 8, "color": "#216e39" },
+              { "date": "2026-11-16", "contributionCount": 2, "color": "#40c463" }
+            ]
+          }
+        ]
+      }
+    },
+    "repositories": {
+      "pageInfo": {
+        "hasNextPage": false,
+        "endCursor": null
+      },
+      "nodes": [
+        {
+          "name": "super-project",
+          "stargazerCount": 85,
+          "isFork": false,
+          "languages": {
+            "edges": [
+              { "size": 120000, "node": { "name": "TypeScript", "color": "#3178c6" } },
+              { "size": 30000, "node": { "name": "HTML", "color": "#e34c26" } },
+              { "size": 15000, "node": { "name": "CSS", "color": "#563d7c" } }
+            ]
+          }
+        },
+        {
+          "name": "python-ai-pipeline",
+          "stargazerCount": 42,
+          "isFork": false,
+          "languages": {
+            "edges": [
+              { "size": 200000, "node": { "name": "Python", "color": "#3572A5" } },
+              { "size": 10000, "node": { "name": "Shell", "color": "#89e051" } }
+            ]
+          }
+        },
+        {
+          "name": "portfolio-site",
+          "stargazerCount": 18,
+          "isFork": false,
+          "languages": {
+            "edges": [
+              { "size": 50000, "node": { "name": "TypeScript", "color": "#3178c6" } },
+              { "size": 25000, "node": { "name": "JavaScript", "color": "#f1e05a" } }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "rateLimit": {
+    "limit": 5000,
+    "cost": 1,
+    "remaining": 4994,
+    "resetAt": "2026-11-16T21:00:00Z"
+  },
+  "user": {
+    "contributionsCollection": {
+      "totalCommitContributions": 98,
+      "totalPullRequestContributions": 15,
+      "totalIssueContributions": 5,
+      "totalRepositoryContributions": 3,
+      "restrictedContributionsCount": 10,
+      "contributionCalendar": {
+        "totalContributions": 128,
+        "weeks": [
+          {
+            "contributionDays": [
+              { "date": "2025-12-25", "contributionCount": 1, "color": "#40c463" },
+              { "date": "2025-12-26", "contributionCount": 3, "color": "#30a14e" },
+              { "date": "2025-12-27", "contributionCount": 4, "color": "#216e39" }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
