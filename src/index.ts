@@ -1,101 +1,141 @@
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import fs from 'node:fs/promises';
 import { loadConfig, validateApiToken } from './config/env.js';
 import { fetchGitHubData } from './api/fetcher.js';
 import { calculateOverview } from './metrics/overview.js';
 import { calculateStreak } from './metrics/streak.js';
 import { calculateLanguages } from './metrics/languages.js';
-import { ProcessedUserData } from './types/metrics.js';
+import { getTheme } from './render/themes.js';
+import { renderOverviewCard } from './render/overview-card.js';
+import { renderStreakCard } from './render/streak-card.js';
+import { renderLanguagesCard } from './render/languages-card.js';
+import { writeSvgCards } from './storage/writer.js';
+import { ContributionsCollection, RepositoryNode, UserProfileData, RateLimitData } from './types/github.js';
 
-// Re-export all submodules for library consumers
-export * from './api/client.js';
-export * from './api/fetcher.js';
-export * from './api/queries.js';
-export * from './config/constants.js';
-export * from './config/env.js';
-export * from './metrics/languages.js';
-export * from './metrics/overview.js';
-export * from './metrics/streak.js';
-export * from './types/github.js';
-export * from './types/metrics.js';
+interface GenerationContext {
+  username: string;
+  profile: UserProfileData;
+  historicalCollections: ContributionsCollection[];
+  rateLimit: RateLimitData | null;
+}
 
 /**
- * Main execution function that loads config, fetches GitHub statistics,
- * and calculates all profile metrics (overview, streak, languages).
+ * Loads mock fixture data for offline testing or dry-runs.
  */
-export async function generateStats(): Promise<ProcessedUserData> {
-  const config = loadConfig();
-  validateApiToken(config);
+async function loadMockData(): Promise<GenerationContext> {
+  const profileFixturePath = path.resolve(process.cwd(), 'tests/fixtures/user-profile.json');
+  const historyFixturePath = path.resolve(process.cwd(), 'tests/fixtures/historical-year.json');
 
-  const rawData = await fetchGitHubData(
-    config.githubToken,
-    config.githubUsername,
-    config.fetchMultiYear
-  );
+  const profileContent = await fs.readFile(profileFixturePath, 'utf8');
+  const historyContent = await fs.readFile(historyFixturePath, 'utf8');
 
-  const overview = calculateOverview(
-    rawData.profile.contributionsCollection,
-    rawData.profile.repositories.nodes,
-    rawData.historicalCollections
-  );
-
-  const streak = calculateStreak(
-    rawData.profile.contributionsCollection,
-    rawData.historicalCollections,
-    { timezone: config.timezone }
-  );
-
-  const languages = calculateLanguages(
-    rawData.profile.repositories.nodes,
-    { maxLanguages: config.maxLanguages }
-  );
+  const profileJson = JSON.parse(profileContent);
+  const historyJson = JSON.parse(historyContent);
 
   return {
-    username: rawData.username,
-    name: rawData.profile.name || rawData.username,
-    createdAt: rawData.profile.createdAt,
-    overview,
-    streak,
-    languages,
-    rateLimit: rawData.rateLimit,
+    username: profileJson.user.login,
+    profile: profileJson.user,
+    historicalCollections: [historyJson.user.contributionsCollection],
+    rateLimit: profileJson.rateLimit,
   };
 }
 
-async function main(): Promise<void> {
-  try {
-    console.log('🚀 readme-stat-generator: Fetching and calculating GitHub stats...');
-    const data = await generateStats();
-    console.log(`\nGitHub Stats for ${data.username} (${data.name}):`);
-    console.log('─'.repeat(45));
-    console.log(`⭐ Stars:               ${data.overview.totalStars}`);
-    console.log(`📦 Commits:             ${data.overview.totalCommits}`);
-    console.log(`🔀 Pull Requests:       ${data.overview.totalPRs}`);
-    console.log(`📝 Issues:              ${data.overview.totalIssues}`);
-    console.log(`🔥 Current Streak:      ${data.streak.currentStreak} days`);
-    console.log(`🏆 Longest Streak:      ${data.streak.longestStreak} days`);
-    console.log(`📊 Total Contributions: ${data.streak.totalContributions}`);
-    console.log('\nTop Languages:');
-    for (const lang of data.languages.languages) {
-      console.log(`  • ${lang.name.padEnd(14)} ${lang.percentage.toFixed(1)}%`);
+/**
+ * Main application runner.
+ */
+export async function run(): Promise<void> {
+  const startTime = Date.now();
+  console.log('🚀 Starting GitHub Stats Generator...\n');
+
+  const config = loadConfig();
+  const isMockMode = process.argv.includes('--mock') || process.env.USE_MOCK === 'true';
+
+  let context: GenerationContext;
+
+  if (isMockMode) {
+    console.log('ℹ️  Running in MOCK mode (using offline fixtures)...\n');
+    context = await loadMockData();
+  } else {
+    try {
+      validateApiToken(config);
+    } catch (err: unknown) {
+      console.warn('⚠️  GITHUB_TOKEN is missing or empty.');
+      console.log('💡 Tip: Pass --mock (e.g. npm run dev -- --mock) to test locally with offline fixture data,\n' +
+                  '   or set GITHUB_TOKEN in your .env file.\n');
+      throw err;
     }
-    console.log(
-      `\nAPI Rate Limit: ${data.rateLimit.remaining}/${data.rateLimit.limit} remaining (resets at ${data.rateLimit.resetAt})`
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(`\n❌ Error: ${error.message}`);
-    } else {
-      console.error('\n❌ Unexpected error:', error);
-    }
-    process.exit(1);
+
+    console.log(`📡 Fetching GitHub data (Multi-Year: ${config.fetchMultiYear ? 'Enabled' : 'Disabled'})...`);
+    const fetched = await fetchGitHubData(config.githubToken, config.githubUsername, config.fetchMultiYear);
+    context = {
+      username: fetched.username,
+      profile: fetched.profile,
+      historicalCollections: fetched.historicalCollections,
+      rateLimit: fetched.rateLimit,
+    };
   }
+
+  const { username, profile, historicalCollections, rateLimit } = context;
+  const repositories = (profile.repositories?.nodes || []) as RepositoryNode[];
+
+  console.log(`👤 Target User: @${username}`);
+  if (rateLimit) {
+    console.log(`📊 API Rate Limit Remaining: ${rateLimit.remaining} / ${rateLimit.limit} (Cost: ${rateLimit.cost})`);
+  }
+
+  // 1. Calculate Statistics
+  console.log('\n🧮 Calculating statistics...');
+  const overviewStats = calculateOverview(
+    profile.contributionsCollection,
+    repositories,
+    historicalCollections,
+    { includeHistory: config.fetchMultiYear }
+  );
+
+  const streakStats = calculateStreak(
+    profile.contributionsCollection,
+    historicalCollections,
+    { timezone: config.timezone }
+  );
+
+  const languageStats = calculateLanguages(repositories, {
+    maxLanguages: config.maxLanguages,
+  });
+
+  // Log calculated metrics summary
+  console.log(`   ⭐ Stars: ${overviewStats.totalStars.toLocaleString()}`);
+  console.log(`   📦 Commits: ${overviewStats.totalCommits.toLocaleString()} | PRs: ${overviewStats.totalPRs} | Issues: ${overviewStats.totalIssues}`);
+  console.log(`   🔥 Current Streak: ${streakStats.currentStreak} days | Longest: ${streakStats.longestStreak} days`);
+  console.log(`   💻 Top Languages: ${languageStats.languages.map((l) => `${l.name} (${l.percentage}%)`).join(', ')}`);
+
+  // 2. Render SVG Cards
+  const theme = getTheme(config.cardTheme);
+  console.log(`\n🎨 Rendering SVG cards using theme "${theme.name}"...`);
+
+  const overviewSvg = renderOverviewCard(overviewStats, { username, theme });
+  const streakSvg = renderStreakCard(streakStats, { theme });
+  const languagesSvg = renderLanguagesCard(languageStats, { theme });
+
+  // 3. Persist atomically
+  console.log(`💾 Writing cards atomically to: ${config.outputDir}`);
+  const writtenPaths = await writeSvgCards(config.outputDir, [
+    { filename: 'overview.svg', content: overviewSvg },
+    { filename: 'streak.svg', content: streakSvg },
+    { filename: 'languages.svg', content: languagesSvg },
+  ]);
+
+  for (const filePath of writtenPaths) {
+    console.log(`   ✅ Saved: ${path.basename(filePath)}`);
+  }
+
+  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+  console.log(`\n✨ Successfully generated 3 stats cards in ${duration}s!`);
 }
 
-// Auto-run if executed directly as entrypoint
-const isDirectRun =
-  Boolean(process.argv[1]) &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
-if (isDirectRun) {
-  main();
+// Execute when run directly as CLI
+if (process.argv[1] && process.argv[1].endsWith('index.ts') || (process.argv[1] && process.argv[1].endsWith('index.js'))) {
+  run().catch((error) => {
+    console.error('\n❌ Error generating GitHub stats:', error.message || error);
+    process.exit(1);
+  });
 }

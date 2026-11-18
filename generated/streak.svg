@@ -1,0 +1,99 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="495"
+  height="195"
+  viewBox="0 0 495 195"
+  fill="none"
+  role="img"
+  aria-label="Contribution Streak"
+>
+  <style>
+    .header {
+      font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      fill: #58a6ff;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    .stat-label {
+      font: 400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      fill: #8b949e;
+    }
+    .stat-value {
+      font: 700 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      fill: #f0f6fc;
+    }
+    .stat-hero {
+      font: 800 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      fill: #f0f6fc;
+    }
+    .subtext {
+      font: 400 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      fill: #6e7681;
+    }
+    .icon {
+      color: #58a6ff;
+    }
+    .icon-fire {
+      color: #f85149;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+
+  <!-- Background Card -->
+  <rect
+    x="0.5"
+    y="0.5"
+    rx="8"
+    height="194"
+    width="494"
+    fill="#0d1117"
+    stroke="#30363d"
+    stroke-width="1"
+  />
+
+  <!-- Header -->
+  <g class="header">
+    <g transform="translate(25, 23)" fill="#58a6ff"><svg class="icon icon-fire" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+    <path fill-rule="evenodd" d="M8.28.324a.75.75 0 01.718.106l.08.066 3.75 3.5a.75.75 0 01.218.665l-.03.136a9.123 9.123 0 01-1.89 3.535l-.128.143a5.502 5.502 0 011.002 4.02l-.04.223a.75.75 0 01-1.037.545l-.123-.058a5.503 5.503 0 01-2.91-3.693l-.045-.233-.06.23a4.004 4.004 0 01-2.227 2.656l-.18.069a.75.75 0 01-.986-.884l.044-.14a5.503 5.503 0 012.38-3.13l.184-.112a9.13 9.13 0 01-1.428-2.618l-.078-.224a.75.75 0 01.25-.838l.11-.067 2.25-1.125a.75.75 0 01.785.07z"></path>
+  </svg></g>
+    <text x="48" y="35">Contribution Streak</text>
+  </g>
+
+  <!-- Card Body -->
+  <g class="body">
+    
+    <!-- Column Dividers -->
+    <line x1="166" y1="65" x2="166" y2="155" stroke="#30363d" stroke-width="1" stroke-dasharray="2 2" />
+    <line x1="328" y1="65" x2="328" y2="155" stroke="#30363d" stroke-width="1" stroke-dasharray="2 2" />
+
+    <!-- Column 1: Total Contributions -->
+    <g transform="translate(85, 0)">
+      <text class="stat-hero" x="0" y="98" text-anchor="middle">694</text>
+      <text class="stat-label" x="0" y="122" text-anchor="middle">Total</text>
+      <text class="subtext" x="0" y="142" text-anchor="middle">Since Jan 1, 2022</text>
+    </g>
+
+    <!-- Column 2: Current Streak -->
+    <g transform="translate(247, 0)">
+      <g transform="translate(-24, 76)" style="color: #f85149;"><svg class="icon icon-fire" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+    <path fill-rule="evenodd" d="M8.28.324a.75.75 0 01.718.106l.08.066 3.75 3.5a.75.75 0 01.218.665l-.03.136a9.123 9.123 0 01-1.89 3.535l-.128.143a5.502 5.502 0 011.002 4.02l-.04.223a.75.75 0 01-1.037.545l-.123-.058a5.503 5.503 0 01-2.91-3.693l-.045-.233-.06.23a4.004 4.004 0 01-2.227 2.656l-.18.069a.75.75 0 01-.986-.884l.044-.14a5.503 5.503 0 012.38-3.13l.184-.112a9.13 9.13 0 01-1.428-2.618l-.078-.224a.75.75 0 01.25-.838l.11-.067 2.25-1.125a.75.75 0 01.785.07z"></path>
+  </svg></g>
+      <text class="stat-hero" x="6" y="98" text-anchor="middle">2</text>
+      <text class="stat-label" x="0" y="122" text-anchor="middle">Current Streak</text>
+      <text class="subtext" x="0" y="142" text-anchor="middle">Grace Period</text>
+    </g>
+
+    <!-- Column 3: Longest Streak -->
+    <g transform="translate(410, 0)">
+      <g transform="translate(-24, 76)" style="color: #58a6ff;"><svg class="icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+    <path fill-rule="evenodd" d="M5.5 2.5a.5.5 0 00-.5.5v1.25h6V3a.5.5 0 00-.5-.5h-5zM4 3a2 2 0 012-2h4a2 2 0 012 2v1.25h1.75a1.75 1.75 0 011.75 1.75v1.5a3.75 3.75 0 01-3.132 3.697A5.003 5.003 0 019 13.064V14h2.25a.75.75 0 010 1.5h-6.5a.75.75 0 010-1.5H7v-.936a5.003 5.003 0 01-3.618-2.867A3.75 3.75 0 01.25 7.5v-1.5A1.75 1.75 0 012 4.25H4V3zm7 2.75v3.13a3.5 3.5 0 01-6 0V5.75h6zm2.75.25a.25.25 0 00-.25-.25H12.5v2.222c.78-.344 1.41-.93 1.75-1.67V6zM2.25 6v.302c.34.74.97 1.326 1.75 1.67V5.75H2.5a.25.25 0 00-.25.25z"></path>
+  </svg></g>
+      <text class="stat-hero" x="6" y="98" text-anchor="middle">110</text>
+      <text class="stat-label" x="0" y="122" text-anchor="middle">Longest Streak</text>
+      <text class="subtext" x="0" y="142" text-anchor="middle">All Time</text>
+    </g>
+  
+  </g>
+</svg>

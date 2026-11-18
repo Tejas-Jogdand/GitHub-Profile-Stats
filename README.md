@@ -1,151 +1,153 @@
-# Readme Stat Generator 📊🔥
+# 📊 Personal GitHub Stats Generator
 
-A TypeScript-powered GitHub statistics and contribution streak metrics engine designed for dynamic GitHub profile READMEs.
+A lightweight, modular, and dependency-free GitHub stats generator built from scratch with **TypeScript**, **Node.js**, and the official **GitHub GraphQL API**.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
-[![Vitest](https://img.shields.io/badge/Tested%20with-Vitest-6E9F18.svg)](https://vitest.dev/)
-
----
-
-## ✨ Features
-
-- **🔥 Accurate Streak Calculation**:
-  - Computes current streak and longest streak across multi-year contribution calendars.
-  - Timezone-aware date normalization (accurate around midnight boundaries).
-  - Grace period support for active streaks today and yesterday.
-- **📈 Comprehensive Overview Metrics**:
-  - Aggregates total stars across non-fork repositories.
-  - Computes total commits, pull requests, issues, and contributed repositories.
-- **💻 Programming Language Breakdown**:
-  - Byte-accurate language distribution percentages.
-  - Built-in GitHub language fallback palette.
-  - Automatic grouping of remaining languages into "Other".
-- **⚡ GraphQL API Fetcher**:
-  - Efficient queries using GitHub's GraphQL v4 API.
-  - Automatic cursor-based pagination for accounts with >100 repositories.
-  - Multi-year chronological contribution collection.
-- **🛡️ Enterprise Grade Reliability**:
-  - Fully typed with TypeScript strict mode enabled.
-  - 100% test pass rate with unit tests covering edge cases (leap years, pagination, rate limits).
+Generates 3 customizable, responsive SVG cards for your GitHub Profile README and updates them automatically via **GitHub Actions**:
+1. **GitHub Overview Card** (Stars, Commits, PRs, Issues, Contributed Repositories)
+2. **Contribution Streak Card** (Total Contributions, Current Streak with grace period, All-time Longest Streak)
+3. **Most Used Languages Card** (Proportional multi-segment progress bar & legend)
 
 ---
 
-## 📁 Project Structure
+## 🎨 Card Previews
 
-```text
-Readme stat/
-├── src/
-│   ├── api/             # GraphQL queries, Octokit client & paginated fetcher
-│   │   ├── client.ts
-│   │   ├── fetcher.ts
-│   │   └── queries.ts
-│   ├── config/          # Environment variable loaders & layout constants
-│   │   ├── constants.ts
-│   │   └── env.ts
-│   ├── metrics/         # Metrics computation engine
-│   │   ├── languages.ts
-│   │   ├── overview.ts
-│   │   └── streak.ts
-│   ├── types/           # Strongly-typed GraphQL & metrics definitions
-│   │   ├── github.ts
-│   │   └── metrics.ts
-│   └── index.ts         # Main entry point and barrel export
-├── tests/               # Vitest test suite and mock fixtures
-│   ├── api/
-│   ├── config/
-│   ├── fixtures/
-│   └── metrics/
-├── .env.example         # Template for environment configuration
-├── package.json
-└── tsconfig.json
+<div align="center">
+  <img src="./generated/overview.svg" alt="GitHub Overview Card" width="480" />
+  <br /><br />
+  <img src="./generated/streak.svg" alt="Contribution Streak Card" width="480" />
+  <br /><br />
+  <img src="./generated/languages.svg" alt="Most Used Languages Card" width="480" />
+</div>
+
+---
+
+## ✨ Features & Architecture
+
+- **No Third-Party Services:** Directly queries official GitHub GraphQL APIs without relying on external SaaS or shared rate-limited endpoints.
+- **Serverless / Zero Runtime Cost:** Runs locally or on a GitHub Actions cron schedule. No continuously running backend or database.
+- **Atomic File Preservation:** SVGs are written to temporary staging files (`.tmp`) first and validated before atomically replacing existing cards. If an API request fails, your existing cards remain untouched.
+- **Dual Streak Modes:** Supports both 1-year rolling calendar and multi-year historical retrieval (back to account creation date) to calculate your true all-time longest streak.
+- **Private Activity Support:** Seamlessly includes private contributions and commits when given a token with `repo` and `read:user` scopes.
+- **Morning Grace Period:** Ensures your active streak doesn't reset to `0` in the morning before your first commit of the day.
+- **Pure SVG Generation:** Hand-crafted, lightweight XML templates with scoped styling and XML entity escaping. No bloated headless browsers (Puppeteer) or DOM parsers.
+- **Pluggable Themes:** Choose from built-in themes (`github-dark`, `tokyo-night`, `dracula`, `minimal-light`) or add your own palette.
+
+---
+
+## 🏗️ Architecture & Modules
+
+```
+┌─────────────────┐       ┌────────────────────────┐       ┌──────────────────────┐       ┌─────────────────────┐
+│  Configuration  │  ──>  │ Data Fetcher (Octokit) │  ──>  │   Metrics Engine     │  ──>  │    SVG Renderer     │
+│  & Environment  │       │  (GraphQL API Client)  │       │   (Pure Functions)   │       │ (Pure SVG Builders) │
+└─────────────────┘       └────────────────────────┘       └──────────────────────┘       └──────────┬──────────┘
+                                                                                                     │
+                                                                                          ┌──────────▼──────────┐
+                                                                                          │    Atomic Writer    │
+                                                                                          │  (Preserve on Fail) │
+                                                                                          └─────────────────────┘
 ```
 
+- **`src/config/`**: Typed environment variable parsing, validation, and defaults.
+- **`src/api/`**: Octokit GraphQL client with auto-pagination for repositories (>100 repos) and historical yearly queries.
+- **`src/metrics/`**: 100% pure deterministic business logic calculating overview totals, streaks, and language byte percentages.
+- **`src/render/`**: Native SVG templates, color themes, inline vector icons, and segmented progress bars.
+- **`src/storage/`**: Atomic file staging and error-safe disk writes.
+
 ---
 
-## 🚀 Getting Started
+## 🚀 Quickstart & Local Development
 
-### Prerequisites
+### 1. Prerequisites
+- **Node.js 20+**
+- **npm 10+**
 
-- **Node.js**: v18.0.0 or higher
-- **npm** or **pnpm**
-- **GitHub Personal Access Token**:
-  - Public stats: `read:user`
-  - Private repo & contribution stats: `repo` + `read:user`
+### 2. Clone and Install
+```bash
+git clone https://github.com/your-username/readme-stat.git
+cd readme-stat
+npm install
+```
 
-### Installation
+### 3. Test Offline (Mock Mode)
+You can run the generator immediately without setting up a token:
+```bash
+npm run dev:mock
+```
+This will read the fixture datasets in `tests/fixtures/` and output all 3 SVGs to `./generated/`.
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd "Readme stat"
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Setup environment variables:
+### 4. Run with Live GitHub Data
+1. Copy the environment template:
    ```bash
    cp .env.example .env
    ```
-   Edit `.env` and provide your GitHub Personal Access Token (`GITHUB_TOKEN`).
+2. Create a GitHub Personal Access Token (PAT):
+   - **For public activity only:** Fine-grained PAT with `User profile: Read-only` or Classic PAT with `read:user`.
+   - **To include private contributions:** Classic PAT with `repo` and `read:user` (or Fine-grained PAT with Contents: Read, Metadata: Read, Profile: Read).
+3. Set your token in `.env`:
+   ```ini
+   GITHUB_TOKEN=ghp_yourPersonalAccessTokenHere
+   GITHUB_USERNAME=your-username
+   CARD_THEME=github-dark
+   FETCH_MULTI_YEAR=true
+   ```
+4. Run the generator:
+   ```bash
+   npm run dev
+   ```
 
 ---
 
-## ⚙️ Configuration
+## 🤖 GitHub Actions Automation
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `GITHUB_TOKEN` | **Yes** | — | Personal Access Token (`ghp_...`) |
-| `GITHUB_USERNAME` | No | Token Owner | GitHub username to generate stats for |
-| `OUTPUT_DIR` | No | `./generated` | Target directory for generated cards |
-| `FETCH_MULTI_YEAR` | No | `true` | Query all years since account creation |
-| `CARD_THEME` | No | `github-dark` | Visual theme (`github-dark`, `dracula`, etc.) |
-| `TIMEZONE` | No | `UTC` | Timezone (e.g. `UTC`, `America/New_York`, `Asia/Kolkata`) |
-| `MAX_LANGUAGES` | No | `5` | Maximum number of top languages to display |
+The repository includes a ready-to-run GitHub Action in [`.github/workflows/update-stats.yml`](.github/workflows/update-stats.yml).
+
+### Setup Instructions:
+1. Push this repository to GitHub.
+2. Go to **Settings** > **Secrets and variables** > **Actions** in your GitHub repository.
+3. Click **New repository secret**:
+   - **Name:** `GH_STATS_TOKEN`
+   - **Value:** Your GitHub Personal Access Token (with `repo` and `read:user` permissions).
+4. (Optional) Go to **Variables** tab to customize options:
+   - `CARD_THEME`: `github-dark` | `tokyo-night` | `dracula` | `minimal-light`
+   - `FETCH_MULTI_YEAR`: `true` | `false`
+   - `TIMEZONE`: `UTC` | `Asia/Kolkata` | `America/New_York`
+5. Go to the **Actions** tab, select **Update GitHub Stats Cards**, and click **Run workflow** to test manual execution.
+6. The workflow will run automatically every day at `00:00 UTC` and commit changes only when stats have updated.
 
 ---
 
-## 🛠️ Available Scripts
+## 📌 Embedding in your Profile README
 
-- **`npm run dev`**: Execute the CLI runner in development mode using `tsx`.
-- **`npm run build`**: Compile TypeScript source files to `./dist`.
-- **`npm start`**: Run the compiled application from `./dist/index.js`.
-- **`npm test`**: Run test suite via Vitest.
-- **`npm run test:watch`**: Run tests in interactive watch mode.
+Add the generated SVG cards into your `README.md`:
+
+```markdown
+### 📈 GitHub Statistics
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/<YOUR_USERNAME>/<REPO_NAME>/main/generated/overview.svg" alt="Overview" width="480" />
+  <br /><br />
+  <img src="https://raw.githubusercontent.com/<YOUR_USERNAME>/<REPO_NAME>/main/generated/streak.svg" alt="Streak" width="480" />
+  <br /><br />
+  <img src="https://raw.githubusercontent.com/<YOUR_USERNAME>/<REPO_NAME>/main/generated/languages.svg" alt="Languages" width="480" />
+</div>
+```
 
 ---
 
 ## 🧪 Testing
 
+The test suite uses [Vitest](https://vitest.dev) for testing:
+
 ```bash
+# Run all unit tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
 ```
-
-Unit tests cover:
-- Authenticated viewer resolution vs explicit login.
-- Paginated repository retrieval.
-- Multi-year contribution retrieval.
-- Timezone shift and leap-year streak calculations.
-- Byte distribution calculation and language fallback colors.
-- Environment loading and configuration validation.
-
----
-
-## 🗺️ Roadmap
-
-- [x] GitHub GraphQL API fetcher with pagination
-- [x] Multi-year contribution and streak calculation engine
-- [x] Language byte calculation and overview metrics
-- [x] Full unit test coverage & TypeScript strict mode
-- [ ] SVG card renderers (Overview, Streak, Languages)
-- [ ] Theme system (github-dark, tokyo-night, dracula, minimal-light)
-- [ ] GitHub Actions workflow for scheduled automated README updates
 
 ---
 
 ## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
+MIT
