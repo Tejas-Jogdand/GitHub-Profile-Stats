@@ -29,6 +29,16 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Verify Authentication Scope
+        run: |
+          if [ -z "${{ secrets.GH_STATS_TOKEN }}" ]; then
+            echo "⚠️  WARNING: GH_STATS_TOKEN secret is not set! Using default GITHUB_TOKEN fallback."
+            echo "   Note: The default GITHUB_TOKEN cannot read private repository contributions across your account."
+            echo "   To include private contributions in your streak, add GH_STATS_TOKEN in Repository Settings > Secrets."
+          else
+            echo "✅ GH_STATS_TOKEN secret detected."
+          fi
+
       - name: Generate SVG Cards
         env:
           # Uses repository secret GH_STATS_TOKEN (recommended for private activity) or default GITHUB_TOKEN
@@ -37,7 +47,7 @@ jobs:
           OUTPUT_DIR: ./generated
           FETCH_MULTI_YEAR: ${{ vars.FETCH_MULTI_YEAR || 'true' }}
           CARD_THEME: ${{ vars.CARD_THEME || 'github-dark' }}
-          TIMEZONE: ${{ vars.TIMEZONE || 'UTC' }}
+          TIMEZONE: ${{ vars.TIMEZONE || 'Asia/Kolkata' }}
         run: npm start
 
       - name: Commit and push updated SVGs

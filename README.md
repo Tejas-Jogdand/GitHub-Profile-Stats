@@ -133,6 +133,8 @@ Add the generated SVG cards into your `README.md`:
 </div>
 ```
 
+> **Tip:** If GitHub's image cache (Camo) serves a stale card, append a cache-buster query parameter to the URL in your README (e.g. `streak.svg?v=1`) to force an immediate refresh.
+
 ---
 
 ## 🧪 Testing
