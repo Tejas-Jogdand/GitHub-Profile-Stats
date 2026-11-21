@@ -82,7 +82,7 @@
   </svg></g>
       <text class="stat-hero" x="6" y="98" text-anchor="middle">1</text>
       <text class="stat-label" x="0" y="122" text-anchor="middle">Current Streak</text>
-      <text class="subtext" x="0" y="142" text-anchor="middle">Active Today</text>
+      <text class="subtext" x="0" y="142" text-anchor="middle">Grace Period</text>
     </g>
 
     <!-- Column 3: Longest Streak -->
