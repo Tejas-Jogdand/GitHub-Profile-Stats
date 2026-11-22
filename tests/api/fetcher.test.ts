@@ -89,20 +89,24 @@ describe('API Fetcher Layer', () => {
     );
   });
 
-  it('should fetch historical contributions for previous years', async () => {
+  it('should fetch historical contributions for all years up to current year', async () => {
     const mockOctokit = {
       graphql: vi.fn().mockResolvedValue(historicalYearFixture),
     } as unknown as Octokit;
 
-    // Created in 2025 (1 year prior to current 2026)
+    // Account created in 2025; assuming current year is 2026, it should query 2025 and 2026
+    const currentYear = new Date().getUTCFullYear();
+    const startYear = currentYear - 1;
+    const expectedYearsCount = currentYear - startYear + 1; // 2 years
+
     const result = await fetchHistoricalContributions(
       mockOctokit,
       'octocat',
-      '2025-05-10T00:00:00Z'
+      `${startYear}-05-10T00:00:00Z`
     );
 
-    expect(result.collections.length).toBe(1);
+    expect(result.collections.length).toBe(expectedYearsCount);
     expect(result.collections[0].totalCommitContributions).toBe(98);
-    expect(mockOctokit.graphql).toHaveBeenCalled();
+    expect(mockOctokit.graphql).toHaveBeenCalledTimes(expectedYearsCount);
   });
 });

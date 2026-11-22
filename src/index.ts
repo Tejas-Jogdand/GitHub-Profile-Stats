@@ -35,7 +35,10 @@ async function loadMockData(): Promise<GenerationContext> {
   return {
     username: profileJson.user.login,
     profile: profileJson.user,
-    historicalCollections: [historyJson.user.contributionsCollection],
+    historicalCollections: [
+      historyJson.user.contributionsCollection,
+      profileJson.user.contributionsCollection,
+    ],
     rateLimit: profileJson.rateLimit,
   };
 }
