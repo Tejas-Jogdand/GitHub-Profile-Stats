@@ -19,10 +19,14 @@ export function calculateOverview(
     .filter((repo) => !repo.isFork)
     .reduce((sum, repo) => sum + (repo.stargazerCount || 0), 0);
 
-  // Determine which collections to include for activity counts
-  const collections = options.includeHistory
-    ? [primaryCollection, ...historicalCollections]
-    : [primaryCollection];
+  // Determine which collections to include for activity counts:
+  // When includeHistory is true and historicalCollections are provided,
+  // sum ONLY the discrete calendar-year collections (which already include the current year)
+  // to avoid double-counting the overlap with rolling primaryCollection.
+  const collections =
+    options.includeHistory && historicalCollections.length > 0
+      ? historicalCollections
+      : [primaryCollection];
 
   const totalCommits = collections.reduce(
     (sum, col) => sum + (col.totalCommitContributions || 0),

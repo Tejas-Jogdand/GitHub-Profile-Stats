@@ -107,11 +107,13 @@ export async function fetchHistoricalContributions(
   const collections: ContributionsCollection[] = [];
   let latestRateLimit: RateLimitData | null = null;
 
-  // Query years from startYear up to currentYear - 1
-  // (The current rolling year is already present in the primary profile fetch)
-  for (let year = startYear; year < currentYear; year++) {
+  // Query all calendar years from startYear up to currentYear (inclusive)
+  // to ensure non-overlapping calendar boundaries
+  for (let year = startYear; year <= currentYear; year++) {
     const from = new Date(Date.UTC(year, 0, 1, 0, 0, 0)).toISOString();
-    const to = new Date(Date.UTC(year, 11, 31, 23, 59, 59)).toISOString();
+    const to = year === currentYear
+      ? new Date().toISOString()
+      : new Date(Date.UTC(year, 11, 31, 23, 59, 59)).toISOString();
 
     const response = await octokit.graphql<YearlyContributionsResponse>(GET_YEARLY_CONTRIBUTIONS, {
       login: username,
