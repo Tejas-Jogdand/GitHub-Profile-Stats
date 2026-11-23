@@ -14,11 +14,24 @@ export interface LanguagesCardOptions {
  */
 export function renderLanguagesCard(stats: LanguageStats, options: LanguagesCardOptions): string {
   const { theme, title = 'Most Used Languages' } = options;
-  const { width, height, borderRadius } = CARD_DIMENSIONS.LANGUAGES;
+  const { width, height: baseHeight, borderRadius } = CARD_DIMENSIONS.LANGUAGES;
 
   const barX = 25;
   const barY = 56;
   const barWidth = width - 50; // 445px
+
+  const rowHeight = 28;
+  const startLegendY = 96;
+  const paddingBottom = 35;
+
+  // Calculate dynamic height based on row count (2-column layout)
+  const rowCount = Math.ceil(stats.languages.length / 2);
+  const calculatedHeight =
+    stats.languages.length === 0
+      ? baseHeight
+      : startLegendY + rowCount * rowHeight + paddingBottom;
+
+  const height = Math.max(baseHeight, calculatedHeight);
 
   const progressBarMarkup = renderProgressBar({
     languages: stats.languages,
@@ -40,8 +53,6 @@ export function renderLanguagesCard(stats: LanguageStats, options: LanguagesCard
   } else {
     // Render 2-column legend
     const colWidth = barWidth / 2; // ~222px
-    const rowHeight = 28;
-    const startLegendY = 96;
 
     const items = stats.languages.map((lang, index) => {
       const colIndex = index % 2; // 0 for left column, 1 for right column

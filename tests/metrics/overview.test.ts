@@ -103,6 +103,29 @@ describe('Overview Metrics Calculator', () => {
     expect(fallbackResult.totalCommits).toBe(100);
   });
 
+  it('should use lifetime unique count from repositoriesContributedToCount when provided in multi-year mode', () => {
+    const profile = userProfileFixture.user;
+    const repos = profile.repositories.nodes as RepositoryNode[];
+    const history = [
+      historicalYearFixture.user.contributionsCollection,
+      profile.contributionsCollection,
+    ];
+
+    // Total summed across collections is 3 + 6 = 9
+    // But lifetime unique count from repositoriesContributedTo is 6
+    const result = calculateOverview(
+      profile.contributionsCollection,
+      repos,
+      history,
+      {
+        includeHistory: true,
+        repositoriesContributedToCount: 6,
+      }
+    );
+
+    expect(result.totalContributedTo).toBe(6);
+  });
+
   it('should exclude forked repositories from star count', () => {
     const profile = userProfileFixture.user;
     const repos: RepositoryNode[] = [

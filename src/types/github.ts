@@ -62,6 +62,9 @@ export interface UserProfileData {
   createdAt: string;
   contributionsCollection: ContributionsCollection;
   repositories: RepositoriesConnection;
+  repositoriesContributedTo?: {
+    totalCount: number;
+  };
 }
 
 export interface UserQueryResponse {

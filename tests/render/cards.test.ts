@@ -111,5 +111,43 @@ describe('SVG Render Engine & Themes', () => {
 
     const svg = renderLanguagesCard(stats, { theme });
     expect(svg).toContain('No language data available');
+    expect(svg).toContain('height="215"');
+  });
+
+  it('should maintain base height (215px) for 6 or fewer languages (<= 3 rows)', () => {
+    const stats: LanguageStats = {
+      totalBytes: 6000,
+      languages: [
+        { name: 'TypeScript', color: '#3178c6', bytes: 1000, percentage: 16.6 },
+        { name: 'JavaScript', color: '#f1e05a', bytes: 1000, percentage: 16.6 },
+        { name: 'Python', color: '#3572A5', bytes: 1000, percentage: 16.6 },
+        { name: 'HTML', color: '#e34c26', bytes: 1000, percentage: 16.6 },
+        { name: 'CSS', color: '#563d7c', bytes: 1000, percentage: 16.6 },
+        { name: 'Other', color: '#8b949e', bytes: 1000, percentage: 16.6 },
+      ],
+    };
+
+    const svg = renderLanguagesCard(stats, { theme });
+    expect(svg).toContain('height="215"');
+    expect(svg).toContain('viewBox="0 0 495 215"');
+  });
+
+  it('should dynamically expand height when MAX_LANGUAGES increases (> 3 rows)', () => {
+    // 10 languages + 1 Other = 11 items -> ceil(11 / 2) = 6 rows
+    // Calculated height: 96 + 6 * 28 + 35 = 299px
+    const stats: LanguageStats = {
+      totalBytes: 11000,
+      languages: Array.from({ length: 11 }, (_, i) => ({
+        name: `Lang${i + 1}`,
+        color: '#3178c6',
+        bytes: 1000,
+        percentage: 9.09,
+      })),
+    };
+
+    const svg = renderLanguagesCard(stats, { theme });
+    expect(svg).toContain('height="299"');
+    expect(svg).toContain('viewBox="0 0 495 299"');
+    expect(svg).toContain('height="298"'); // Background rect height (height - 1)
   });
 });
