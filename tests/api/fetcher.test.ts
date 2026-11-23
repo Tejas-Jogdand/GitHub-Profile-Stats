@@ -40,6 +40,7 @@ describe('API Fetcher Layer', () => {
 
     expect(result.profile.login).toBe('octocat');
     expect(result.profile.repositories.nodes.length).toBe(3);
+    expect(result.profile.repositoriesContributedTo?.totalCount).toBe(6);
     expect(result.rateLimit.remaining).toBe(4995);
   });
 

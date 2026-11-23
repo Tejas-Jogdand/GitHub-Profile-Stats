@@ -3,6 +3,7 @@ import { OverviewStats } from '../types/metrics.js';
 
 export interface OverviewCalculationOptions {
   includeHistory?: boolean;
+  repositoriesContributedToCount?: number;
 }
 
 /**
@@ -43,10 +44,22 @@ export function calculateOverview(
     0
   );
 
-  const totalContributedTo = collections.reduce(
-    (sum, col) => sum + (col.totalRepositoryContributions || 0),
-    0
-  );
+  // Calculate total contributed to:
+  // If lifetime repositoriesContributedToCount is provided and includeHistory is true,
+  // use the exact unique count from GitHub API to avoid cross-year duplicate counting.
+  // Otherwise, if includeHistory is false, use primaryCollection's 1-year count.
+  // Fall back to summing collection counts if repositoriesContributedToCount is omitted.
+  let totalContributedTo: number;
+  if (!options.includeHistory) {
+    totalContributedTo = primaryCollection.totalRepositoryContributions || 0;
+  } else if (options.repositoriesContributedToCount !== undefined) {
+    totalContributedTo = options.repositoriesContributedToCount;
+  } else {
+    totalContributedTo = collections.reduce(
+      (sum, col) => sum + (col.totalRepositoryContributions || 0),
+      0
+    );
+  }
 
   return {
     totalStars,

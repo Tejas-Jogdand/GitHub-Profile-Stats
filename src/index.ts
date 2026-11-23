@@ -92,7 +92,10 @@ export async function run(): Promise<void> {
     profile.contributionsCollection,
     repositories,
     historicalCollections,
-    { includeHistory: config.fetchMultiYear }
+    {
+      includeHistory: config.fetchMultiYear,
+      repositoriesContributedToCount: profile.repositoriesContributedTo?.totalCount,
+    }
   );
 
   const streakStats = calculateStreak(

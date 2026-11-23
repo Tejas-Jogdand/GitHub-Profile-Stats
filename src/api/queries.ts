@@ -45,6 +45,11 @@ export const GET_USER_PROFILE = `
           }
         }
       }
+      repositoriesContributedTo(
+        contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]
+      ) {
+        totalCount
+      }
       repositories(
         first: 100
         ownerAffiliations: [OWNER]

@@ -9,6 +9,9 @@
     "login": "octocat",
     "name": "The Octocat",
     "createdAt": "2024-01-01T00:00:00Z",
+    "repositoriesContributedTo": {
+      "totalCount": 6
+    },
     "contributionsCollection": {
       "totalCommitContributions": 142,
       "totalPullRequestContributions": 28,
