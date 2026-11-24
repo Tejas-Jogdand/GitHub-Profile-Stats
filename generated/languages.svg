@@ -75,12 +75,12 @@
     <rect x="25" y="56" width="445" height="10" rx="5" fill="#21262d" />
     <!-- Segmented progress -->
     <g clip-path="url(#progress-bar-clip)">
-      <rect x="25" y="56" width="236.3" height="10" fill="#3178c6" />
-      <rect x="261.295" y="56" width="90.3" height="10" fill="#f1e05a" />
-      <rect x="351.63" y="56" width="38.7" height="10" fill="#e34c26" />
-      <rect x="390.34499999999997" y="56" width="26.7" height="10" fill="#663399" />
-      <rect x="417.04499999999996" y="56" width="21.8" height="10" fill="#4F5D95" />
-      <rect x="438.84999999999997" y="56" width="31.6" height="10" fill="#8b949e" />
+      <rect x="25" y="56" width="236.7" height="10" fill="#3178c6" />
+      <rect x="261.74" y="56" width="90.3" height="10" fill="#f1e05a" />
+      <rect x="352.07500000000005" y="56" width="38.7" height="10" fill="#e34c26" />
+      <rect x="390.79" y="56" width="26.7" height="10" fill="#663399" />
+      <rect x="417.49" y="56" width="21.8" height="10" fill="#4F5D95" />
+      <rect x="439.295" y="56" width="31.6" height="10" fill="#8b949e" />
     </g>
   
 
@@ -90,7 +90,7 @@
       <g>
         <circle cx="30" cy="92" r="5" fill="#3178c6" />
         <text class="stat-label" x="43" y="96">TypeScript</text>
-        <text class="stat-value" x="227.5" y="96" text-anchor="end">53.1%</text>
+        <text class="stat-value" x="227.5" y="96" text-anchor="end">53.2%</text>
       </g>
 
       <g>

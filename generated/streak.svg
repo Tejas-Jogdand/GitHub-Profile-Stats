@@ -70,7 +70,7 @@
 
     <!-- Column 1: Total Contributions -->
     <g transform="translate(85, 0)">
-      <text class="stat-hero" x="0" y="98" text-anchor="middle">702</text>
+      <text class="stat-hero" x="0" y="98" text-anchor="middle">705</text>
       <text class="stat-label" x="0" y="122" text-anchor="middle">Total</text>
       <text class="subtext" x="0" y="142" text-anchor="middle">Since Jan 1, 2022</text>
     </g>
@@ -80,7 +80,7 @@
       <g transform="translate(-24, 76)" style="color: #f85149;"><svg class="icon icon-fire" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
     <path fill-rule="evenodd" d="M8.28.324a.75.75 0 01.718.106l.08.066 3.75 3.5a.75.75 0 01.218.665l-.03.136a9.123 9.123 0 01-1.89 3.535l-.128.143a5.502 5.502 0 011.002 4.02l-.04.223a.75.75 0 01-1.037.545l-.123-.058a5.503 5.503 0 01-2.91-3.693l-.045-.233-.06.23a4.004 4.004 0 01-2.227 2.656l-.18.069a.75.75 0 01-.986-.884l.044-.14a5.503 5.503 0 012.38-3.13l.184-.112a9.13 9.13 0 01-1.428-2.618l-.078-.224a.75.75 0 01.25-.838l.11-.067 2.25-1.125a.75.75 0 01.785.07z"></path>
   </svg></g>
-      <text class="stat-hero" x="6" y="98" text-anchor="middle">1</text>
+      <text class="stat-hero" x="6" y="98" text-anchor="middle">2</text>
       <text class="stat-label" x="0" y="122" text-anchor="middle">Current Streak</text>
       <text class="subtext" x="0" y="142" text-anchor="middle">Grace Period</text>
     </g>
